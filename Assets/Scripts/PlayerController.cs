@@ -19,7 +19,7 @@ namespace AGDDPlatformer
         public Color cantDashColor;
         float lastDashTime;
         Vector2 dashDirection;
-        bool isDashing;
+        public bool isDashing;
         bool canDash;
         bool wantsToDash;
 
