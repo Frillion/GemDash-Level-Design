@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace AGDDPlatformer
 {
@@ -13,7 +18,7 @@ namespace AGDDPlatformer
         public PlayerController[] players;
 
         [Header("Level")]
-        public PlayerGoal[] playerGoals;
+        public List<Object> playerGoals;
         public bool timeStopped;
         public bool isGameComplete;
         public string firstLevel;
@@ -31,33 +36,49 @@ namespace AGDDPlatformer
         public AudioSource source;
         public AudioClip winSound;
 
-        void Awake()
+        [Header("Cancellation")] 
+        private CancellationTokenSource _token;
+
+        private void Awake()
         {
             instance = this;
 
-            if (playerGoals.Length == 0)
+            if (playerGoals.Count == 0)
             {
-                playerGoals = FindObjectsOfType<PlayerGoal>();
+                playerGoals = FindObjectsByType(typeof(PlayerGoal),(FindObjectsSortMode)FindObjectsInactive.Exclude).ToList();
             }
+
+            if (_token != null)
+            {
+                _token.Cancel();
+                _token.Dispose();
+            }
+
+            _token = CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy(),
+                CancellationToken.None);
         }
 
-        IEnumerator Start()
+        private void Start()
+        {
+            Init(_token.Token).Forget();
+        }
+
+        private async UniTask Init(CancellationToken token)
         {
             timeStopped = true;
 
             endScreen.SetActive(false);
             gameOverScreen.SetActive(false);
-
+            
+            await UniTask.WaitForSeconds(startScreenTime, cancellationToken:token);
+            
             startScreen.SetActive(true);
-
-            yield return new WaitForSeconds(startScreenTime);
-
             startScreen.SetActive(false);
 
             timeStopped = false;
         }
 
-        void Update()
+        private void Update()
         {
             if (isGameComplete)
             {
@@ -72,20 +93,12 @@ namespace AGDDPlatformer
 
             /* --- Check Player Goals --- */
 
-            bool allGoalsSatisfied = true;
-            foreach (PlayerGoal playerGoal in playerGoals)
-            {
-                if (!playerGoal.isSatisfied)
-                {
-                    allGoalsSatisfied = false;
-                    break;
-                }
-            }
+            var allGoalsSatisfied = playerGoals.Cast<PlayerGoal>().All(playerGoal => playerGoal.isSatisfied);
 
             if (allGoalsSatisfied)
             {
                 source.PlayOneShot(winSound);
-                StartCoroutine(LevelCompleted());
+                LevelCompleted(_token.Token).Forget();
             }
 
             if (Input.GetButtonDown("Reset"))
@@ -94,15 +107,15 @@ namespace AGDDPlatformer
             }
         }
 
-        IEnumerator LevelCompleted()
+        private async UniTask LevelCompleted(CancellationToken token)
         {
             timeStopped = true;
 
-            yield return new WaitForSeconds(endScreenDelay);
+            await UniTask.WaitForSeconds(endScreenTime, cancellationToken: token);
 
             endScreen.SetActive(true);
 
-            yield return new WaitForSeconds(endScreenTime);
+            await UniTask.WaitForSeconds(endScreenTime, cancellationToken: token);
 
             if (!string.IsNullOrEmpty(nextLevel))
             {
@@ -115,14 +128,14 @@ namespace AGDDPlatformer
             }
         }
 
-        void ResetGame()
+        private void ResetGame()
         {
             SceneManager.LoadScene(firstLevel);
         }
 
-        void ResetLevel()
+        private void ResetLevel()
         {
-            foreach (PlayerController player in players)
+            foreach (var player in players)
             {
                 player.ResetPlayer();
             }
