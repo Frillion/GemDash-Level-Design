@@ -10,6 +10,7 @@ namespace AGDDPlatformer
         public float Speed; //Probably should be the same as player max speed
         public Transform StartPoint;
         public Transform EndPoint;
+        [SerializeField] protected BoxCollider2D boxCollider;
 
         enum Points
         {
@@ -18,7 +19,7 @@ namespace AGDDPlatformer
 
         private Points GoingTowards = Points.End;
 
-        void Update()
+        protected virtual void Update() 
         {
             //Move the platform back and forth between the start and end points
             Vector2 startToEnd = EndPoint.position - StartPoint.position;
@@ -43,7 +44,7 @@ namespace AGDDPlatformer
             }
         }
 
-        void OnCollisionStay2D(Collision2D other)
+        protected virtual void OnCollisionStay2D(Collision2D other)
         {
             var otherBody = other.gameObject.GetComponent<KinematicObject>();
             if (otherBody == null) { return; }
@@ -62,7 +63,7 @@ namespace AGDDPlatformer
             }
         }
 
-        void OnCollisionExit2D(Collision2D other)
+        protected virtual void OnCollisionExit2D(Collision2D other)
         {
             var otherBody = other.gameObject.GetComponent<KinematicObject>();
             if (otherBody == null) { return; }
