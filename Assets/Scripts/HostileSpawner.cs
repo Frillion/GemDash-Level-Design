@@ -18,7 +18,7 @@ public class HostileSpawner : SingletonMonoBehaviour<HostileSpawner>
         _hostilePool = new ObjectPool<Hostile>().CreateObjectPool(prefab);
     }
 
-    protected void Start()
+    public void Start()
     {
         spawnPoints.ForEach(point => _activeHostiles.Add(_hostilePool.Spawn(point.position)));
     }

@@ -6,6 +6,7 @@ using UnityEngine;
 public class Hostile : Spawnable
 {
    private Vector3 _originalPosition;
+   [SerializeField] private AudioSource deathNoise;
 
    private void Awake()
    {
@@ -20,6 +21,7 @@ public class Hostile : Spawnable
       if (player.isDashing)
       {
          player.ResetDash();
+         deathNoise.Play();
          HostileSpawner.Instance.Despawn(this);
       }
       else
