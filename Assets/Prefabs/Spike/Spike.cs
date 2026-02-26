@@ -1,20 +1,17 @@
+using AGDDPlatformer;
 using UnityEngine;
 
 public class Spike : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
-    Debug.Log("Something hit spike: " + other.name);
+        Debug.Log("Something hit spike: " + other.name);
 
-    if (other.CompareTag("Player1"))
+        if (other.CompareTag("Player1"))
         {
-        PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
+            PlayerController player = other.GetComponentInParent<PlayerController>();
 
-        if (health != null)
-            {
-            Debug.Log("Damaging player");
-            health.TakeDamage(1);
-            }
+            player.ResetPlayer();
         }
     }
 }
