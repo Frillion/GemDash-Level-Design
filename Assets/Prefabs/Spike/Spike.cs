@@ -4,12 +4,17 @@ public class Spike : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player1"))
-        {
-            // For testing, just destroy player
-            Destroy(other.gameObject);
-            other.GetComponent<PlayerHealth>().TakeDamage(1);
+    Debug.Log("Something hit spike: " + other.name);
 
+    if (other.CompareTag("Player1"))
+        {
+        PlayerHealth health = other.GetComponentInParent<PlayerHealth>();
+
+        if (health != null)
+            {
+            Debug.Log("Damaging player");
+            health.TakeDamage(1);
+            }
         }
     }
 }
