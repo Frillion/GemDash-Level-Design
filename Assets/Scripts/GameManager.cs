@@ -39,6 +39,8 @@ namespace AGDDPlatformer
         [Header("Cancellation")] 
         private CancellationTokenSource _token;
 
+        public static event Action OnLevelReset;
+
         private void Awake()
         {
             instance = this;
@@ -133,13 +135,15 @@ namespace AGDDPlatformer
             SceneManager.LoadScene(firstLevel);
         }
 
-        private void ResetLevel()
+        public void ResetLevel()
         {
             HostileSpawner.Instance.Init();
             foreach (var player in players)
             {
                 player.ResetPlayer();
             }
+
+            OnLevelReset?.Invoke();
         }
     }
 }

@@ -10,8 +10,8 @@ public class Spike : MonoBehaviour
         if (other.CompareTag("Player1"))
         {
             PlayerController player = other.GetComponentInParent<PlayerController>();
-
-            player.ResetPlayer();
+            GameManager.instance.ResetLevel();
+            //player.ResetPlayer();
         }
     }
 }
