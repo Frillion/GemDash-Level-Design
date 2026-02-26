@@ -34,6 +34,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8475169495564634989
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -52,6 +53,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -73,10 +76,13 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 02fc4f2c507af184e9b25ed051736803, type: 3}
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: -7958959127364079504, guid: 18eab9ae0ab66f24ba4b88e71aba18ca,
+    type: 3}
   m_Color: {r: 0.6600659, g: 0.7573329, b: 0.8584906, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,7 +91,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1469726359258531133
 GameObject:
@@ -128,7 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6500540646859028539}
   m_Layer: 0
-  m_Name: Regeneratin Falling Platform
+  m_Name: Regeneratin Falling Platform ( USE THIS )
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,6 +215,8 @@ MonoBehaviour:
   boxCollider: {fileID: 1765491276395531642}
   isMovingPlatform: 0
   fallDelay: 0.5
+  spriteRenderer: {fileID: 8475169495564634989}
+  shakeMagnitude: 0.1
   doesRegen: 1
   regenTime: 2
 --- !u!50 &5038192104038795942
@@ -273,7 +280,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.0029754639}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -283,7 +290,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 0.2144432}
   m_EdgeRadius: 0
 --- !u!1 &8932278602542005694
 GameObject:

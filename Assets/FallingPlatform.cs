@@ -1,3 +1,4 @@
+using System.Collections;
 using AGDDPlatformer;
 using UnityEngine;
 
@@ -10,6 +11,10 @@ public class FallingPlatform : MovingPlatform
     private float fallTimer = 0f;
     private bool isFalling = false;
     private bool collapsed = false;
+    [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] float shakeMagnitude = 0.1f;
+    private Vector3 originalLocalPosition;
+    private Color originalColor;
 
     [Header("Regen Settings")]
     [SerializeField] bool doesRegen = false;
@@ -25,6 +30,12 @@ public class FallingPlatform : MovingPlatform
         HandleCollapsingPlatform();
         HandleRegeningPlatform();
 
+    }
+
+    private void Awake()
+    {
+        originalLocalPosition = transform.localPosition;
+        originalColor = spriteRenderer.material.color;
     }
 
     protected override void OnCollisionStay2D(Collision2D other)
@@ -75,6 +86,8 @@ public class FallingPlatform : MovingPlatform
                 boxCollider.enabled = true;
                 isRegening = false;
                 regenTimer = 0f;
+                Color c = originalColor;
+                spriteRenderer.color = new Color(c.r, c.g, c.b, 1f);
             }
 
         }
@@ -83,6 +96,25 @@ public class FallingPlatform : MovingPlatform
 
     private void HandleCollapsingVFX()
     {
-        // TODO: Setup falling visual FX when the player lands on the object
+        if (isFalling && !collapsed)
+        {
+            StartCoroutine(ShakeThenFade());
+        }
+    }
+
+
+    private IEnumerator ShakeThenFade()
+    {
+        while (isFalling && !collapsed)
+        {
+            float xOffset = Random.Range(-1f, 1f) * shakeMagnitude;
+            transform.localPosition = originalLocalPosition + new Vector3(xOffset, 0f, 0f);
+
+            yield return null;
+        }
+
+        transform.localPosition = originalLocalPosition;
+        Color c = spriteRenderer.color;
+        spriteRenderer.color = new Color(c.r, c.g, c.b, 0.3f);
     }
 }
