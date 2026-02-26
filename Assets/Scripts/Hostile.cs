@@ -7,10 +7,16 @@ public class Hostile : Spawnable
 {
    private Vector3 _originalPosition;
    [SerializeField] private AudioSource deathNoise;
+   [SerializeField] private float speed;
 
    private void Awake()
    {
       _originalPosition = transform.position;
+   }
+
+   private void Update()
+   {
+      transform.position += transform.right * -(speed * Time.deltaTime);
    }
 
    private void OnTriggerEnter2D(Collider2D other)

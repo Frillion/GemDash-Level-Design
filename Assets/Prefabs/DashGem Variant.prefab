@@ -8,6 +8,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 145553869082119158, guid: 8f5b452a722246d4d92d7ab9e88d1775,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.11485406
+      objectReference: {fileID: 0}
+    - target: {fileID: 145553869082119158, guid: 8f5b452a722246d4d92d7ab9e88d1775,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.121812716
+      objectReference: {fileID: 0}
+    - target: {fileID: 145553869082119158, guid: 8f5b452a722246d4d92d7ab9e88d1775,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.8396226
+      objectReference: {fileID: 0}
     - target: {fileID: 145553870935749410, guid: 8f5b452a722246d4d92d7ab9e88d1775,
         type: 3}
       propertyPath: m_Name
@@ -98,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Spawned: 0
   deathNoise: {fileID: 2565726042783280588}
+  speed: 3
 --- !u!82 &2565726042783280588 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 2854939857690232251, guid: 8f5b452a722246d4d92d7ab9e88d1775,

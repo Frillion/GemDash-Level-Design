@@ -12,22 +12,31 @@ public class HostileSpawner : SingletonMonoBehaviour<HostileSpawner>
     private readonly List<Hostile> _activeHostiles = new();
     private ObjectPool<Hostile> _hostilePool;
 
-    protected new void Awake()
+    private void Start()
     {
-        base.Awake();
-        _hostilePool = new ObjectPool<Hostile>().CreateObjectPool(prefab);
+        Init();
     }
 
-    public void Start()
+    public void Init()
     {
-        spawnPoints.ForEach(point => _activeHostiles.Add(_hostilePool.Spawn(point.position)));
+        ResetPools();
+        ResetMobs();
+    }
+
+    private void ResetPools(bool createNew = true)
+    {
+        PoolManager.Instance.Remove(prefab.name);
+        if (createNew)
+        {
+            _hostilePool = new ObjectPool<Hostile>().CreateObjectPool(prefab);
+        }
     }
 
     public void ResetMobs()
     {
         _activeHostiles.ForEach(hostile => hostile.Despawn());
         _activeHostiles.Clear();
-        Start();
+        spawnPoints.ForEach(point => _activeHostiles.Add(_hostilePool.Spawn(point.position)));
     }
 
     public void Despawn(Hostile hostile)

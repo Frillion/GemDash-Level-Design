@@ -135,7 +135,7 @@ namespace AGDDPlatformer
 
         private void ResetLevel()
         {
-            HostileSpawner.Instance.Start();
+            HostileSpawner.Instance.Init();
             foreach (var player in players)
             {
                 player.ResetPlayer();
