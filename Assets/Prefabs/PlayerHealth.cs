@@ -6,7 +6,6 @@ public class PlayerHealth : MonoBehaviour
     public int health = 1;
 
     PlayerController controller;
-    bool isDead;
 
     void Awake()
     {
@@ -15,38 +14,17 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (isDead) return;
-
         health -= damage;
 
         if (health <= 0)
-            Die();
-    }
-
-    void Die()
-    {
-        isDead = true;
-
-        controller.enabled = false; // freeze player movement
-        UIManager.instance.ShowRespawnText();
-    }
-
-    void Update()
-    {
-        if (isDead && Input.anyKeyDown)
         {
-            Respawn();
+            ResetPlayer();
         }
     }
 
-    void Respawn()
+    void ResetPlayer()
     {
-        health = 1;
-        isDead = false;
-
-        controller.ResetPlayer();
-        controller.enabled = true;
-
-        UIManager.instance.HideRespawnText();
+        health = 1;                
+        controller.ResetPlayer();  
     }
 }
