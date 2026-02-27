@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Threading;
 using AGDDPlatformer;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class FallingPlatform : MovingPlatform
 {
@@ -42,11 +44,8 @@ public class FallingPlatform : MovingPlatform
 
     private void Restart()
     {
-        if (fadeCancellationTokens != null)
-        {
-           fadeCancellationTokens.Cancel(); 
-           fadeCancellationTokens.Dispose();
-        }
+        fadeCancellationTokens?.Cancel();
+        fadeCancellationTokens?.Dispose();
 
         fadeCancellationTokens =
             CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy(),
@@ -65,40 +64,62 @@ public class FallingPlatform : MovingPlatform
 
     private async UniTask FadeOutAfterSeconds(float seconds, CancellationToken token)
     {
-        await UniTask.WaitForSeconds(seconds, cancellationToken: token);
-        while (!token.IsCancellationRequested)
+        try
         {
-            if (fadeOutCurrentTime >= fadeOutDuration)
+            await UniTask.WaitForSeconds(seconds, cancellationToken: token);
+            while (!token.IsCancellationRequested)
             {
-                if (doesRegen) FadeInAfterSeconds(regenTime,token).Forget();
-                boxCollider.enabled = false;
-                isFalling = false;
-                return;
+                if (fadeOutCurrentTime >= fadeOutDuration)
+                {
+                    if (doesRegen) FadeInAfterSeconds(regenTime, token).Forget();
+                    boxCollider.enabled = false;
+                    isFalling = false;
+                    return;
+                }
+
+
+                var xOffset = Random.Range(-1f, 1f) * shakeMagnitude;
+                transform.localPosition = originalLocalPosition + new Vector3(xOffset, 0f, 0f);
+
+                fadeOutCurrentTime += Time.deltaTime;
+                spriteRenderer.material.SetFloat(DissolveStrength,
+                    fadeoutCurve.Evaluate(fadeOutCurrentTime / fadeOutDuration));
+
+                await UniTask.NextFrame(cancellationToken: token);
             }
-
-
-            var xOffset = Random.Range(-1f, 1f) * shakeMagnitude;
-            transform.localPosition = originalLocalPosition + new Vector3(xOffset, 0f, 0f);
-            
-            fadeOutCurrentTime += Time.deltaTime;
-            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(fadeOutCurrentTime/fadeOutDuration));
-            
-            await UniTask.NextFrame(cancellationToken: token);
+        }
+        catch (OperationCanceledException)
+        {
+            isFalling = false;
+            fadeOutCurrentTime = 0;
+            boxCollider.enabled = true;
+            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
         }
     }
     
     private async UniTask FadeInAfterSeconds(float seconds, CancellationToken token)
     {
-        await UniTask.WaitForSeconds(seconds, cancellationToken: token);
-        while (!token.IsCancellationRequested)
+        try
         {
-            boxCollider.enabled = true;
-            if (fadeOutCurrentTime <= 0)  return;
+            await UniTask.WaitForSeconds(seconds, cancellationToken: token);
 
-            fadeOutCurrentTime -= Time.deltaTime;
-            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(fadeOutCurrentTime/fadeOutDuration));
-            
-            await UniTask.NextFrame(cancellationToken: token);
+            while (!token.IsCancellationRequested)
+            {
+                boxCollider.enabled = true;
+                if (fadeOutCurrentTime <= 0) return;
+
+                fadeOutCurrentTime -= Time.deltaTime;
+                spriteRenderer.material.SetFloat(DissolveStrength,
+                    fadeoutCurve.Evaluate(fadeOutCurrentTime / fadeOutDuration));
+
+                await UniTask.NextFrame(cancellationToken: token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            fadeOutCurrentTime = 0;
+            boxCollider.enabled = true;
+            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
         }
     }
 }

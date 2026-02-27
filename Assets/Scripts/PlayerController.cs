@@ -56,7 +56,7 @@ namespace AGDDPlatformer
 
         void Update()
         {
-            isFrozen = GameManager.instance.timeStopped;
+            isFrozen = GameManager.Instance.timeStopped;
 
             /* --- Read Input --- */
 
