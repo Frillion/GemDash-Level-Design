@@ -44,8 +44,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bbd9257765c322b4ac9a2f8ba59d8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HostileSpawner
-  prefab: {fileID: 8912621734608875564, guid: 8d41dfb718828ff78964705127daf451, type: 3}
-  spawnPoints: []
+  gemPrefab: {fileID: 8912621734608875564, guid: 8d41dfb718828ff78964705127daf451,
+    type: 3}
+  staticGemPrefab: {fileID: 7043983627995070143, guid: 94f483fbde4f89f1081d57f42886a5a1,
+    type: 3}
+  lifetimeGemPrefab: {fileID: 7996595843348859827, guid: b39d513f8fd10b377ac22b053944a747,
+    type: 3}
+  movingGemSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  staticGemSpawnPoints:
+  - {fileID: 0}
+  - {fileID: 0}
+  continuousSpawners:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spawnDelay: 7
 --- !u!1 &4691332085338600576
 GameObject:
   m_ObjectHideFlags: 0

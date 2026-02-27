@@ -819,7 +819,7 @@ PrefabInstance:
     - target: {fileID: 4691332085822845703, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: nextLevel
-      value: Level4
+      value: Level3
       objectReference: {fileID: 0}
     - target: {fileID: 4691332085998625986, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
@@ -849,7 +849,7 @@ PrefabInstance:
     - target: {fileID: 4691332086608218244, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 5.084445
+      value: 5.085945
       objectReference: {fileID: 0}
     - target: {fileID: 4691332086608218244, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
@@ -969,6 +969,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_textInfo.characterCount
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5925190455387231917, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: continuousSpawners.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5925190455387231917, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: movingGemSpawnPoints.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5925190455387231917, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: staticGemSpawnPoints.Array.size
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7886308783601118933, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}

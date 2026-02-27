@@ -13,9 +13,9 @@ public class HostileSpawner : SingletonMonoBehaviour<HostileSpawner>
     [SerializeField] private Hostile staticGemPrefab;
     [SerializeField] private LifeTimeHostile lifetimeGemPrefab;
     
-    [SerializeField] private List<Transform> movingGemSpawnPoints;
-    [SerializeField] private List<Transform> staticGemSpawnPoints;
-    [SerializeField] private List<Transform> continuousSpawners;
+    [SerializeField] private List<Transform> movingGemSpawnPoints = new();
+    [SerializeField] private List<Transform> staticGemSpawnPoints = new();
+    [SerializeField] private List<Transform> continuousSpawners = new();
     
     private readonly List<Hostile> _activeHostiles = new();
     

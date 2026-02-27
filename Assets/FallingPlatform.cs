@@ -36,6 +36,21 @@ public class FallingPlatform : MovingPlatform
     private void Awake()
     {
         originalLocalPosition = transform.localPosition;
+        GameManager.OnLevelReset += Restart;
+        Restart();
+    }
+
+    private void Restart()
+    {
+        if (fadeCancellationTokens != null)
+        {
+           fadeCancellationTokens.Cancel(); 
+           fadeCancellationTokens.Dispose();
+        }
+
+        fadeCancellationTokens =
+            CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy(),
+                CancellationToken.None);
     }
 
     protected override void OnCollisionStay2D(Collision2D other)
@@ -45,7 +60,7 @@ public class FallingPlatform : MovingPlatform
         
         if (potentialPlayer == null || isFalling) return;
         isFalling = true;
-        FadeOutAfterSeconds(fallDelay, this.GetCancellationTokenOnDestroy()).Forget();
+        FadeOutAfterSeconds(fallDelay, fadeCancellationTokens.Token).Forget();
     }
 
     private async UniTask FadeOutAfterSeconds(float seconds, CancellationToken token)
@@ -78,10 +93,7 @@ public class FallingPlatform : MovingPlatform
         while (!token.IsCancellationRequested)
         {
             boxCollider.enabled = true;
-            if (fadeOutCurrentTime <= 0)
-            {
-                return;
-            }
+            if (fadeOutCurrentTime <= 0)  return;
 
             fadeOutCurrentTime -= Time.deltaTime;
             spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(fadeOutCurrentTime/fadeOutDuration));
