@@ -816,6 +816,11 @@ PrefabInstance:
       propertyPath: m_Points.m_Paths.Array.data[0].Array.data[3].y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4691332085822845703, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: nextLevel
+      value: Level4
+      objectReference: {fileID: 0}
     - target: {fileID: 4691332085998625986, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_Enabled
