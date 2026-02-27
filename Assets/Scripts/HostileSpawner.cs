@@ -7,10 +7,13 @@ using UnityEngine.Serialization;
 
 public class HostileSpawner : SingletonMonoBehaviour<HostileSpawner> 
 {
-    [SerializeField] private Hostile prefab;
-    [SerializeField] private List<Transform> spawnPoints;
+    [SerializeField] private Hostile gemPrefab;
+    [SerializeField] private Hostile staticGemPrefab;
+    [SerializeField] private List<Transform> movingGemSpawnPoints;
+    [SerializeField] private List<Transform> staticGemSpawnPoints;
     private readonly List<Hostile> _activeHostiles = new();
-    private ObjectPool<Hostile> _hostilePool;
+    private ObjectPool<Hostile> _movingGemPool;
+    private ObjectPool<Hostile> _staticGemPool;
 
     private void Start()
     {
@@ -25,18 +28,21 @@ public class HostileSpawner : SingletonMonoBehaviour<HostileSpawner>
 
     private void ResetPools(bool createNew = true)
     {
-        PoolManager.Instance.Remove(prefab.name);
-        if (createNew)
-        {
-            _hostilePool = new ObjectPool<Hostile>().CreateObjectPool(prefab);
-        }
+        PoolManager.Instance.Remove(gemPrefab.name);
+        PoolManager.Instance.Remove(staticGemPrefab.name);
+        
+        if (!createNew) return;
+        
+        _movingGemPool = new ObjectPool<Hostile>().CreateObjectPool(gemPrefab);
+        _staticGemPool = new ObjectPool<Hostile>().CreateObjectPool(staticGemPrefab);
     }
 
     public void ResetMobs()
     {
         _activeHostiles.ForEach(hostile => hostile.Despawn());
         _activeHostiles.Clear();
-        spawnPoints.ForEach(point => _activeHostiles.Add(_hostilePool.Spawn(point.position)));
+        movingGemSpawnPoints.ForEach(point => _activeHostiles.Add(_movingGemPool.Spawn(point.position)));
+        staticGemSpawnPoints.ForEach(point => _activeHostiles.Add(_staticGemPool.Spawn(point.position)));
     }
 
     public void Despawn(Hostile hostile)

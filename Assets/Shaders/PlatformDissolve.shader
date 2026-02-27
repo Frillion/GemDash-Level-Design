@@ -58,6 +58,7 @@ Shader "Unlit/PlatformDissolve"
                 fixed4 col = tex2D(_MainTex, i.uv);
                 fixed4 dissolve_color = step(tex2D(_DissolveTex, i.uv), _dissolveStrength);
                 col.a -= 1 - dissolve_color.r;
+                col.a = clamp(col.a, 0, 1);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Threading;
 using AGDDPlatformer;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class FallingPlatform : MovingPlatform
@@ -15,6 +17,11 @@ public class FallingPlatform : MovingPlatform
     [SerializeField] float shakeMagnitude = 0.1f;
     private Vector3 originalLocalPosition;
     private Color originalColor;
+    
+    [Header("Fade Out Settings")]
+    [SerializeField] private AnimationCurve fadeoutCurve;
+    [SerializeField] private float fadeOutDuration;
+    [SerializeField] private float fadeOutCurrentTime;
 
     [Header("Regen Settings")]
     [SerializeField] bool doesRegen = false;
@@ -41,12 +48,11 @@ public class FallingPlatform : MovingPlatform
     protected override void OnCollisionStay2D(Collision2D other)
     {
         base.OnCollisionStay2D(other);
-        PlayerController potentialPlayer = other.gameObject.GetComponent<PlayerController>();
-        if (potentialPlayer != null && !isFalling)
-        {
-            isFalling = true;
-            HandleCollapsingVFX();
-        }
+        var potentialPlayer = other.gameObject.GetComponent<PlayerController>();
+        
+        if (potentialPlayer == null || isFalling) return;
+        isFalling = true;
+        HandleCollapsingVFX();
     }
 
 
@@ -61,17 +67,14 @@ public class FallingPlatform : MovingPlatform
                 collapsed = true;
         }
 
-        if (collapsed)
-        {
-            boxCollider.enabled = false;
-            if (doesRegen)
-            {
-                isRegening = true;
-                collapsed = false;
-                isFalling = false;
-                fallTimer = 0f;
-            }    
-        }
+        if (!collapsed) return;
+        boxCollider.enabled = false;
+        
+        if (!doesRegen) return;
+        isRegening = true;
+        collapsed = false;
+        isFalling = false;
+        fallTimer = 0f;
     }
 
 
@@ -102,6 +105,32 @@ public class FallingPlatform : MovingPlatform
         }
     }
 
+    private async UniTask FadeOut(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            if (fadeOutCurrentTime >= fadeOutDuration) return;
+
+            fadeOutCurrentTime += Time.deltaTime;
+            spriteRenderer.material.SetFloat("_dissolveStrength", fadeoutCurve.Evaluate(fadeOutCurrentTime/fadeOutDuration));
+            
+            await UniTask.NextFrame(cancellationToken: token);
+        }
+    }
+    
+    private async UniTask FadeIn(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            if (fadeOutCurrentTime <= 0) return;
+
+            fadeOutCurrentTime -= Time.deltaTime;
+            spriteRenderer.material.SetFloat("_dissolveStrength", fadeoutCurve.Evaluate(fadeOutCurrentTime/fadeOutDuration));
+            
+            await UniTask.NextFrame(cancellationToken: token);
+        }
+    }
+
 
     private IEnumerator ShakeThenFade()
     {
@@ -114,7 +143,7 @@ public class FallingPlatform : MovingPlatform
         }
 
         transform.localPosition = originalLocalPosition;
-        Color c = spriteRenderer.color;
+        var c = spriteRenderer.color;
         spriteRenderer.color = new Color(c.r, c.g, c.b, 0.3f);
     }
 }
