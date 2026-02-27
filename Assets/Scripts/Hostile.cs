@@ -9,17 +9,17 @@ public class Hostile : Spawnable
    [SerializeField] private AudioSource deathNoise;
    [SerializeField] private float speed;
 
-   private void Awake()
+   protected virtual void Awake()
    {
       _originalPosition = transform.position;
    }
 
-   private void Update()
+   protected virtual void Update()
    {
       transform.position += transform.right * -(speed * Time.deltaTime);
    }
 
-   private void OnTriggerEnter2D(Collider2D other)
+   protected virtual void OnTriggerEnter2D(Collider2D other)
    {
       var player = other.GetComponent<PlayerController>();
       if (!player) return;

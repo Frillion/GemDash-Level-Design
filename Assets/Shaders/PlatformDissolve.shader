@@ -5,6 +5,7 @@ Shader "Unlit/PlatformDissolve"
         _MainTex ("Texture", 2D) = "white" {}
         _DissolveTex("Texture", 2D) = "white" {}
         _dissolveStrength ("Time", Float) = 0
+        _Color ("Color", Color) = (1,1,1,1)
     }
     SubShader
     {
@@ -51,6 +52,7 @@ Shader "Unlit/PlatformDissolve"
             }
 
             float _dissolveStrength;
+            float4 _Color;
 
             fixed4 frag (v2f i) : SV_Target
             {
@@ -61,7 +63,7 @@ Shader "Unlit/PlatformDissolve"
                 col.a = clamp(col.a, 0, 1);
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
-                return col;
+                return col * _Color;
             }
             ENDCG
         }

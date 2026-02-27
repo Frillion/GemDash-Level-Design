@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: 145553870935749410, guid: 8f5b452a722246d4d92d7ab9e88d1775,
         type: 3}
       propertyPath: m_Name
-      value: DashGem Variant
+      value: DashGem Moving Hostile
       objectReference: {fileID: 0}
     - target: {fileID: 145553870935749411, guid: 8f5b452a722246d4d92d7ab9e88d1775,
         type: 3}

@@ -61,7 +61,7 @@ PrefabInstance:
     - target: {fileID: 432520284158106453, guid: 8d41dfb718828ff78964705127daf451,
         type: 3}
       propertyPath: m_Name
-      value: DashGem Variant Variant
+      value: DashGem Static Hostile
       objectReference: {fileID: 0}
     - target: {fileID: 8912621734608875564, guid: 8d41dfb718828ff78964705127daf451,
         type: 3}
