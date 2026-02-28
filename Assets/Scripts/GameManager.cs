@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using GemDash.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace AGDDPlatformer
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager :SingletonMonoBehaviour<GameManager> 
     {
-        public static GameManager instance;
-
         [Header("Players")]
         public PlayerController[] players;
 
@@ -41,10 +40,9 @@ namespace AGDDPlatformer
 
         public static event Action OnLevelReset;
 
-        private void Awake()
+        private new void Awake()
         {
-            instance = this;
-
+            base.Awake();
             if (playerGoals.Count == 0)
             {
                 playerGoals = FindObjectsByType(typeof(PlayerGoal),(FindObjectsSortMode)FindObjectsInactive.Exclude).ToList();
