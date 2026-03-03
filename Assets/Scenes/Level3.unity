@@ -1288,11 +1288,6 @@ PrefabInstance:
       propertyPath: 'spawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1695050163}
-    - target: {fileID: 2653386272220273286, guid: 1d096467bd11505479937aff780e5cd2,
-        type: 3}
-      propertyPath: dashTime
-      value: 0.05
-      objectReference: {fileID: 0}
     - target: {fileID: 4691332085472185387, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.data[0].x

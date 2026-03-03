@@ -4,12 +4,15 @@ namespace AGDDPlatformer
 {
     public class PlayerController : KinematicObject
     {
+        private static readonly int Running = Animator.StringToHash("Running");
+
         [Header("Movement")]
         public float maxSpeed = 7;
         public float jumpSpeed = 7;
         public float jumpDeceleration = 0.5f; // Upwards slow after releasing jump button
         public float cayoteTime = 0.1f; // Lets player jump just after leaving ground
         public float jumpBufferTime = 0.1f; // Lets the player input a jump just before becoming grounded
+        [SerializeField] private Animator playerAnim;
 
         [Header("Dash")]
         public float dashSpeed;
@@ -59,8 +62,10 @@ namespace AGDDPlatformer
             isFrozen = GameManager.Instance.timeStopped;
 
             /* --- Read Input --- */
-
             move.x = Input.GetAxisRaw("Horizontal");
+
+            playerAnim.SetBool(Running, move.x != 0);
+
             if (gravityModifier < 0)
             {
                 move.x *= -1;
