@@ -16,7 +16,6 @@
   <Project Path="Unity.CollabProxy.Editor.csproj" />
   <Project Path="Unity.2D.Tilemap.Extras.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
-  <Project Path="Unity.VSCode.Editor.csproj" />
   <Project Path="Unity.AI.Navigation.Updater.csproj" />
   <Project Path="Unity.SysrootPackage.Editor.csproj" />
   <Project Path="UniTask.Addressables.csproj" />
