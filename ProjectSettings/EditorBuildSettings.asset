@@ -20,5 +20,11 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Level4.unity
     guid: 6cd1ff564be88b54d8f8008be1d6824e
+  - enabled: 1
+    path: Assets/Scenes/Level teaching Hostile gems.unity
+    guid: be08a7c838cfaea41992b27d7be569de
+  - enabled: 1
+    path: Assets/Scenes/Level teaching reset gems.unity
+    guid: b5cd2eb1343de074aaf773632d811124
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
