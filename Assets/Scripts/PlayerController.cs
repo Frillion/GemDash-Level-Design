@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AGDDPlatformer
 {
     public class PlayerController : KinematicObject
     {
         private static readonly int Running = Animator.StringToHash("Running");
+        private static readonly int Blend = Shader.PropertyToID("_Blend");
 
         [Header("Movement")]
         public float maxSpeed = 7;
@@ -21,6 +25,10 @@ namespace AGDDPlatformer
         public float dashCooldown;
         public Color canDashColor;
         public Color cantDashColor;
+        [SerializeField] private AnimationCurve dashEaseIn;
+        [SerializeField] private AnimationCurve dashEaseOut;
+        private float _currentDashBlend;
+        private CancellationTokenSource dashTokenSource;
         float lastDashTime;
         Vector2 dashDirection;
         public bool isDashing;
@@ -50,6 +58,7 @@ namespace AGDDPlatformer
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             GameManager.OnLevelReset += ResetPlayer;
+            ResetToken();
 
             lastJumpTime = -jumpBufferTime * 2;
 
@@ -57,6 +66,16 @@ namespace AGDDPlatformer
             _startOrientation = spriteRenderer.flipX;
 
             defaultGravityModifier = gravityModifier;
+        }
+
+        private void ResetToken()
+        {
+            dashTokenSource?.Cancel();
+            dashTokenSource?.Dispose();
+
+            dashTokenSource =
+                CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy(),
+                    CancellationToken.None);
         }
 
         private void OnDestroy()
@@ -67,6 +86,32 @@ namespace AGDDPlatformer
         public void SetResetPosition(Vector2 position)
         {
             _resetPosition = position;
+        }
+
+        private async UniTask FadeInOutDash(CancellationToken token)
+        {
+            try
+            {
+                _currentDashBlend = 0;
+                var startTime = Time.time;
+                while (!token.IsCancellationRequested)
+                {
+                    var currentTime = Time.time - startTime;
+                    if (currentTime >= dashTime) return;
+                
+                    _currentDashBlend = currentTime >= dashTime / 2
+                        ? dashEaseOut.Evaluate(currentTime / dashTime / 2)
+                        : dashEaseIn.Evaluate(currentTime / dashTime / 2);
+                
+                    spriteRenderer.material.SetFloat(Blend, _currentDashBlend);
+
+                    await UniTask.NextFrame(cancellationToken:token);
+                }
+            }
+            finally{
+                _currentDashBlend = 0;
+                spriteRenderer.material.SetFloat(Blend, _currentDashBlend);
+            }
         }
 
         private void Update()
@@ -121,6 +166,7 @@ namespace AGDDPlatformer
                 canDash = false;
                 gravityModifier = 0;
 
+                FadeInOutDash(dashTokenSource.Token).Forget();
                 source.PlayOneShot(dashSound);
             }
             wantsToDash = false;
@@ -204,6 +250,7 @@ namespace AGDDPlatformer
 
         public void ResetPlayer()
         {
+            ResetToken();
             transform.position = _resetPosition;
             spriteRenderer.flipX = _startOrientation;
 

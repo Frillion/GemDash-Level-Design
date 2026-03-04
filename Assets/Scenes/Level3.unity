@@ -1288,6 +1288,11 @@ PrefabInstance:
       propertyPath: 'spawnPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 1695050163}
+    - target: {fileID: 2952664071637640562, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.423
+      objectReference: {fileID: 0}
     - target: {fileID: 4691332085472185387, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_Points.m_Paths.Array.data[0].Array.data[0].x
@@ -1351,7 +1356,7 @@ PrefabInstance:
     - target: {fileID: 4691332085998625991, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4691332086022123576, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
@@ -1673,6 +1678,21 @@ PrefabInstance:
       propertyPath: 'staticGemSpawnPoints.Array.data[1]'
       value: 
       objectReference: {fileID: 557115249}
+    - target: {fileID: 7886308783601118933, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7886308783601118933, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7886308783601118933, guid: 1d096467bd11505479937aff780e5cd2,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9019109077228661966, guid: 1d096467bd11505479937aff780e5cd2,
         type: 3}
       propertyPath: m_PlayOnAwake

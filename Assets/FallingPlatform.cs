@@ -42,9 +42,13 @@ public class FallingPlatform : MovingPlatform
         Restart();
     }
 
+    private void OnDestroy()
+    {
+        GameManager.OnLevelReset -= Restart;
+    }
+
     private void Restart()
     {
-        fadeCancellationTokens?.Cancel();
         fadeCancellationTokens?.Dispose();
 
         fadeCancellationTokens =
@@ -92,8 +96,13 @@ public class FallingPlatform : MovingPlatform
         {
             isFalling = false;
             fadeOutCurrentTime = 0;
-            boxCollider.enabled = true;
-            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
+            if (boxCollider != null) { boxCollider.enabled = true; }
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
+            }
+
         }
     }
     
@@ -118,8 +127,12 @@ public class FallingPlatform : MovingPlatform
         catch (OperationCanceledException)
         {
             fadeOutCurrentTime = 0;
-            boxCollider.enabled = true;
-            spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
+            if (boxCollider != null) { boxCollider.enabled = true; }
+
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.material.SetFloat(DissolveStrength, fadeoutCurve.Evaluate(0));
+            }
         }
     }
 }
