@@ -1,15 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace AGDDPlatformer
 {
     public class PlayerController : KinematicObject
     {
+        private static readonly int Running = Animator.StringToHash("Running");
+        private static readonly int Blend = Shader.PropertyToID("_Blend");
+
         [Header("Movement")]
         public float maxSpeed = 7;
         public float jumpSpeed = 7;
         public float jumpDeceleration = 0.5f; // Upwards slow after releasing jump button
         public float cayoteTime = 0.1f; // Lets player jump just after leaving ground
         public float jumpBufferTime = 0.1f; // Lets the player input a jump just before becoming grounded
+        [SerializeField] private Animator playerAnim;
 
         [Header("Dash")]
         public float dashSpeed;
@@ -17,6 +25,10 @@ namespace AGDDPlatformer
         public float dashCooldown;
         public Color canDashColor;
         public Color cantDashColor;
+        [SerializeField] private AnimationCurve dashEaseIn;
+        [SerializeField] private AnimationCurve dashEaseOut;
+        private float _currentDashBlend;
+        private CancellationTokenSource dashTokenSource;
         float lastDashTime;
         Vector2 dashDirection;
         public bool isDashing;
@@ -28,8 +40,8 @@ namespace AGDDPlatformer
         public AudioClip jumpSound;
         public AudioClip dashSound;
 
-        Vector2 startPosition;
-        bool startOrientation;
+        private Vector2 _resetPosition;
+        private bool _startOrientation;
 
         float lastJumpTime;
         float lastGroundedTime;
@@ -42,25 +54,75 @@ namespace AGDDPlatformer
 
         Vector2 jumpBoost;
 
-        void Awake()
+        private void Awake()
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            GameManager.OnLevelReset += ResetPlayer;
+            ResetToken();
 
             lastJumpTime = -jumpBufferTime * 2;
 
-            startPosition = transform.position;
-            startOrientation = spriteRenderer.flipX;
+            _resetPosition = transform.position;
+            _startOrientation = spriteRenderer.flipX;
 
             defaultGravityModifier = gravityModifier;
         }
 
-        void Update()
+        private void ResetToken()
         {
-            isFrozen = GameManager.instance.timeStopped;
+            dashTokenSource?.Cancel();
+            dashTokenSource?.Dispose();
+
+            dashTokenSource =
+                CancellationTokenSource.CreateLinkedTokenSource(this.GetCancellationTokenOnDestroy(),
+                    CancellationToken.None);
+        }
+
+        private void OnDestroy()
+        {
+            GameManager.OnLevelReset -= ResetPlayer;
+        }
+
+        public void SetResetPosition(Vector2 position)
+        {
+            _resetPosition = position;
+        }
+
+        private async UniTask FadeInOutDash(CancellationToken token)
+        {
+            try
+            {
+                _currentDashBlend = 0;
+                var startTime = Time.time;
+                while (!token.IsCancellationRequested)
+                {
+                    var currentTime = Time.time - startTime;
+                    if (currentTime >= dashTime) return;
+                
+                    _currentDashBlend = currentTime >= dashTime / 2
+                        ? dashEaseOut.Evaluate(currentTime / dashTime / 2)
+                        : dashEaseIn.Evaluate(currentTime / dashTime / 2);
+                
+                    spriteRenderer.material.SetFloat(Blend, _currentDashBlend);
+
+                    await UniTask.NextFrame(cancellationToken:token);
+                }
+            }
+            finally{
+                _currentDashBlend = 0;
+                spriteRenderer.material.SetFloat(Blend, _currentDashBlend);
+            }
+        }
+
+        private void Update()
+        {
+            isFrozen = GameManager.Instance.timeStopped;
 
             /* --- Read Input --- */
-
             move.x = Input.GetAxisRaw("Horizontal");
+
+            playerAnim.SetBool(Running, move.x != 0);
+
             if (gravityModifier < 0)
             {
                 move.x *= -1;
@@ -104,6 +166,7 @@ namespace AGDDPlatformer
                 canDash = false;
                 gravityModifier = 0;
 
+                FadeInOutDash(dashTokenSource.Token).Forget();
                 source.PlayOneShot(dashSound);
             }
             wantsToDash = false;
@@ -187,8 +250,9 @@ namespace AGDDPlatformer
 
         public void ResetPlayer()
         {
-            transform.position = startPosition;
-            spriteRenderer.flipX = startOrientation;
+            ResetToken();
+            transform.position = _resetPosition;
+            spriteRenderer.flipX = _startOrientation;
 
             lastJumpTime = -jumpBufferTime * 2;
 

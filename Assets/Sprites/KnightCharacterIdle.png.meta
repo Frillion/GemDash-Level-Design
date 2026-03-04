@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 18eab9ae0ab66f24ba4b88e71aba18ca
+guid: f66c296a0743634a9b7251967a2930f8
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -7958959127364079504
-    second: BloodyPlatform_0
+      213: -2023102961139224476
+    second: KnightCharacterIdle_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 64
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BloodyPlatform_0
+      name: KnightCharacterIdle_0
       rect:
         serializedVersion: 2
-        x: 2
-        y: 18
-        width: 62
-        height: 14
+        x: 20
+        y: 15
+        width: 22
+        height: 35
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0707c9f87d81c8190800000000000000
-      internalID: -7958959127364079504
+      spriteID: 4607141639e7ce3e0800000000000000
+      internalID: -2023102961139224476
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BloodyPlatform_0: -7958959127364079504
+      KnightCharacterIdle_0: -2023102961139224476
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

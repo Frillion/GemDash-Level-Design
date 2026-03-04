@@ -214,7 +214,7 @@ MonoBehaviour:
   EndPoint: {fileID: 2633080674339149129}
   boxCollider: {fileID: 1765491276395531642}
   isMovingPlatform: 0
-  fallDelay: 0.5
+  fallDelay: 0.1
   spriteRenderer: {fileID: 8475169495564634989}
   shakeMagnitude: 0.1
   fadeoutCurve:
@@ -241,7 +241,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  fadeOutDuration: 5
+  fadeOutDuration: 1
   fadeOutCurrentTime: 0
   doesRegen: 1
   regenTime: 2

@@ -12,7 +12,7 @@ Shader "Unlit/PlatformDissolve"
         Tags { "Queue"="Transparent" "RenderType"="Transparent" }
         LOD 100
 
-        ZWrite Off
+        ZWrite Off 
         Blend SrcAlpha OneMinusSrcAlpha
 
         Pass

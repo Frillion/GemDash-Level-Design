@@ -4,16 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using GemDash.Utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 namespace AGDDPlatformer
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager :SingletonMonoBehaviour<GameManager> 
     {
-        public static GameManager instance;
-
         [Header("Players")]
         public PlayerController[] players;
 
@@ -23,6 +22,7 @@ namespace AGDDPlatformer
         public bool isGameComplete;
         public string firstLevel;
         public string nextLevel;
+        public Transform startPoint;
 
         [Header("Level Transition")]
         public GameObject startScreen;
@@ -41,10 +41,9 @@ namespace AGDDPlatformer
 
         public static event Action OnLevelReset;
 
-        private void Awake()
+        private new void Awake()
         {
-            instance = this;
-
+            base.Awake();
             if (playerGoals.Count == 0)
             {
                 playerGoals = FindObjectsByType(typeof(PlayerGoal),(FindObjectsSortMode)FindObjectsInactive.Exclude).ToList();
@@ -135,14 +134,9 @@ namespace AGDDPlatformer
             SceneManager.LoadScene(firstLevel);
         }
 
-        public void ResetLevel()
+        public static void ResetLevel()
         {
             HostileSpawner.Instance.Init();
-            foreach (var player in players)
-            {
-                player.ResetPlayer();
-            }
-
             OnLevelReset?.Invoke();
         }
     }
