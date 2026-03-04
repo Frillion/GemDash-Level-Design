@@ -1,15 +1,15 @@
 using System;
 using AGDDPlatformer;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class CheckPoint : MonoBehaviour
 {
-    private Transform _respawnPoint;
+    [SerializeField] private Transform respawnPoint;
     private bool _checked;
 
     private void Awake()
     {
-        _respawnPoint = GetComponentInChildren<Transform>();
         _checked = false;
     }
 
@@ -22,6 +22,7 @@ public class CheckPoint : MonoBehaviour
         if (!player)
             return;
         
-        component.SetResetPosition(_respawnPoint.position);
+        component.SetResetPosition(respawnPoint.position);
+        _checked = true;
     }
 }

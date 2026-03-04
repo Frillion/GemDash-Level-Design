@@ -29,6 +29,7 @@ namespace AGDDPlatformer
         [SerializeField] private AnimationCurve dashEaseOut;
         private float _currentDashBlend;
         private CancellationTokenSource dashTokenSource;
+        [SerializeField] private ParticleSystem dashParticles;
         float lastDashTime;
         Vector2 dashDirection;
         public bool isDashing;
@@ -59,6 +60,8 @@ namespace AGDDPlatformer
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             GameManager.OnLevelReset += ResetPlayer;
             ResetToken();
+            var emission = dashParticles.emission;
+            emission.enabled = false;
 
             lastJumpTime = -jumpBufferTime * 2;
 
@@ -90,10 +93,13 @@ namespace AGDDPlatformer
 
         private async UniTask FadeInOutDash(CancellationToken token)
         {
+            var emission = dashParticles.emission;
+            
             try
             {
                 _currentDashBlend = 0;
                 var startTime = Time.time;
+                emission.enabled = true;
                 while (!token.IsCancellationRequested)
                 {
                     var currentTime = Time.time - startTime;
@@ -110,6 +116,7 @@ namespace AGDDPlatformer
             }
             finally{
                 _currentDashBlend = 0;
+                emission.enabled = false;
                 spriteRenderer.material.SetFloat(Blend, _currentDashBlend);
             }
         }
