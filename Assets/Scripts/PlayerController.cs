@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace AGDDPlatformer
 {
@@ -31,8 +32,8 @@ namespace AGDDPlatformer
         public AudioClip jumpSound;
         public AudioClip dashSound;
 
-        Vector2 startPosition;
-        bool startOrientation;
+        private Vector2 _resetPosition;
+        private bool _startOrientation;
 
         float lastJumpTime;
         float lastGroundedTime;
@@ -45,19 +46,30 @@ namespace AGDDPlatformer
 
         Vector2 jumpBoost;
 
-        void Awake()
+        private void Awake()
         {
             spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+            GameManager.OnLevelReset += ResetPlayer;
 
             lastJumpTime = -jumpBufferTime * 2;
 
-            startPosition = transform.position;
-            startOrientation = spriteRenderer.flipX;
+            _resetPosition = transform.position;
+            _startOrientation = spriteRenderer.flipX;
 
             defaultGravityModifier = gravityModifier;
         }
 
-        void Update()
+        private void OnDestroy()
+        {
+            GameManager.OnLevelReset -= ResetPlayer;
+        }
+
+        public void SetResetPosition(Vector2 position)
+        {
+            _resetPosition = position;
+        }
+
+        private void Update()
         {
             isFrozen = GameManager.Instance.timeStopped;
 
@@ -192,8 +204,8 @@ namespace AGDDPlatformer
 
         public void ResetPlayer()
         {
-            transform.position = startPosition;
-            spriteRenderer.flipX = startOrientation;
+            transform.position = _resetPosition;
+            spriteRenderer.flipX = _startOrientation;
 
             lastJumpTime = -jumpBufferTime * 2;
 

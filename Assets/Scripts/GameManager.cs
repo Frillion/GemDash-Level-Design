@@ -22,6 +22,7 @@ namespace AGDDPlatformer
         public bool isGameComplete;
         public string firstLevel;
         public string nextLevel;
+        public Transform startPoint;
 
         [Header("Level Transition")]
         public GameObject startScreen;
@@ -133,14 +134,9 @@ namespace AGDDPlatformer
             SceneManager.LoadScene(firstLevel);
         }
 
-        public void ResetLevel()
+        public static void ResetLevel()
         {
             HostileSpawner.Instance.Init();
-            foreach (var player in players)
-            {
-                player.ResetPlayer();
-            }
-
             OnLevelReset?.Invoke();
         }
     }
